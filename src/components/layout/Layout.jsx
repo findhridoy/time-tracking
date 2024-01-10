@@ -1,8 +1,14 @@
+import { Outlet } from "react-router-dom";
+
 export default function Layout() {
   return (
-    <main>
+    <div>
       <aside>menubar</aside>
       <header>header</header>
-    </main>
+
+      <main>
+        <Outlet />
+      </main>
+    </div>
   );
 }
