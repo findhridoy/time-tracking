@@ -3,7 +3,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { INITIAL_EVENTS, createEventId } from "../assets/event";
 
 export default function Calender() {
@@ -11,6 +11,8 @@ export default function Calender() {
     weekendsVisible: true,
     currentEvents: [],
   });
+
+  const [viewMode, setViewMode] = useState("dayGridMonth");
 
   // const handleWeekendsToggle = () => {
   //   setState({
@@ -52,6 +54,7 @@ export default function Calender() {
   };
 
   function renderEventContent(eventInfo) {
+    setViewMode(eventInfo?.view?.type);
     return (
       <>
         <b>{eventInfo.timeText}</b>
@@ -60,6 +63,18 @@ export default function Calender() {
       </>
     );
   }
+
+  useEffect(() => {
+    if (viewMode === "timeGridWeek" || viewMode === "timeGridDay") {
+      let first_th = document.querySelectorAll(
+        ".fc-col-header > thead > tr > th"
+      )[0];
+
+      first_th.innerHTML = `<div class="fc-timegrid-axis-frame h-full w-full !justify-center">
+      Time
+    </div>`;
+    }
+  }, [viewMode]);
 
   // function renderSidebarEvent(event) {
   //   return (
