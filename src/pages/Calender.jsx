@@ -13,6 +13,9 @@ export default function Calender() {
   });
 
   const [viewMode, setViewMode] = useState("dayGridMonth");
+  const [timeDuration, setTimeDuration] = useState(30);
+
+  console.log(timeDuration);
 
   // const handleWeekendsToggle = () => {
   //   setState({
@@ -55,6 +58,7 @@ export default function Calender() {
 
   function renderEventContent(eventInfo) {
     setViewMode(eventInfo?.view?.type);
+
     return (
       <>
         <b>{eventInfo.timeText}</b>
@@ -71,8 +75,26 @@ export default function Calender() {
       )[0];
 
       first_th.innerHTML = `<div class="fc-timegrid-axis-frame h-full w-full !justify-center">
-      Time
+      <div class="flex h-max gap-1">
+      <button id="time-contract" class="bg-slate-400 p-1" type="button">
+        <
+      </button>
+      <button id="time-expand" class="bg-slate-400 p-1" type="button">
+        >
+      </button>
+    </div>
     </div>`;
+
+      document.getElementById("time-contract").addEventListener("click", () => {
+        setTimeDuration((prevTD) =>
+          prevTD > 15
+            ? prevTD - 15
+            : (document.getElementById("time-contract").disabled = true)
+        );
+      });
+      document.getElementById("time-expand").addEventListener("click", () => {
+        setTimeDuration((prevTD) => prevTD + 15);
+      });
     }
   }, [viewMode]);
 
@@ -91,16 +113,16 @@ export default function Calender() {
   //   );
   // }
 
-  const handleDateSet = (dateInfo) => {
-    console.log(dateInfo);
+  // const handleDateSet = (dateInfo) => {
+  // console.log(dateInfo);
 
-    // dateInfo.el.innerHTML = "World";
+  // dateInfo.el.innerHTML = "World";
 
-    // dayRenderInfo.el.insertAdjacentHTML(
-    //   "beforeend",
-    //   '<i class="fc-content" aria-hidden="true">Hello</i>'
-    // );
-  };
+  // dayRenderInfo.el.insertAdjacentHTML(
+  //   "beforeend",
+  //   '<i class="fc-content" aria-hidden="true">Hello</i>'
+  // );
+  // };
 
   return (
     <div className="demo-app">
@@ -128,6 +150,7 @@ export default function Calender() {
           <ul>{state.currentEvents.map(renderSidebarEvent)}</ul>
         </div>
       </div> */}
+
       <div className="demo-app-main">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -144,6 +167,44 @@ export default function Calender() {
             day: "Day",
             // list: "Agenda",
           }}
+          initialView="dayGridMonth"
+          editable={true}
+          selectable={true}
+          selectMirror={true}
+          dayMaxEvents={true}
+          initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
+          select={handleDateSelect}
+          eventContent={renderEventContent} // custom render function
+          eventClick={handleEventClick}
+          eventsSet={handleEvents} // called after events are initialized/added/changed/removed
+          /* you can update a remote database when these fire:
+            eventAdd={function(){}}
+            eventChange={function(){}}
+            eventRemove={function(){}}
+            */
+
+          // my editable props
+          allDaySlot={false}
+          slotLabelInterval={{ minutes: timeDuration }}
+          slotDuration={{ minutes: timeDuration }}
+          slotLabelFormat={[
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              omitZeroMinute: false,
+              meridiem: false,
+            },
+          ]}
+          contentHeight="auto"
+          // aspectRatio={5}
+
+          // eventTimeFormat={{
+          //   hour: "2-digit",
+          //   hour12: true,
+          //   minute: "2-digit",
+          //   meridiem: "short",
+          // }}
+
           // views={{
           //   dayGridMonth: {
           //     titleFormat: { year: "numeric", month: "short" },
@@ -157,72 +218,6 @@ export default function Calender() {
           //     titleFormat: { year: "numeric", month: "short" },
           //   },
           // }}
-          slotLabelFormat={(e) =>
-            `${e.date.hour <= 9 ? `0${e.date.hour}` : e.date.hour}:${
-              e.date.minute <= 9 ? `0${e.date.minute}` : e.date.minute
-            }`
-          }
-          eventTimeFormat={{
-            hour: "2-digit",
-            hour12: true,
-            minute: "2-digit",
-            meridiem: "short",
-          }}
-          allDaySlot={false}
-          allDayText="all"
-          contentHeight="auto"
-          // aspectRatio={5}
-          initialView="dayGridMonth"
-          editable={true}
-          selectable={true}
-          selectMirror={true}
-          dayMaxEvents={true}
-          // weekends={state.weekendsVisible}
-          initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
-          select={handleDateSelect}
-          eventContent={renderEventContent} // custom render function
-          eventClick={handleEventClick}
-          eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-          /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}
-            */
-
-          // my editable props
-
-          // firstDay={1}
-          // allDaySlot={false}
-          // slotDuration="00:30:00"
-          slotLabelInterval={{ minutes: 30 }}
-          // slotMinTime="12:00"
-          // scrollTime="12:00"
-          // slotLabelFormat={[
-          //   {
-          //     hour: "2-digit",
-          //     minute: "2-digit",
-          //     omitZeroMinute: false,
-          //     meridiem: false,
-          //   },
-          //   // { month: "long", year: "numeric" }, // top level of text
-          //   // { weekday: "short" },
-          // ]}
-          // duration={{
-          //   initialView: "timeGridDay",
-          //   views: {
-          //     timeGridFourDay: {
-          //       // type: "timeGrid",
-          //       duration: { days: 1 },
-          //     },
-          //   },
-          // }}
-          // dayCount={4}
-
-          // datesSet={handleDateSet}
-          // slotLabelContent={"Hello"}
-          // dayHeaderContent="Day"
-          // dayHeaderDidMount={"Dayss"}
-          // allDayContent="All Day"
         />
       </div>
     </div>
