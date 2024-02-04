@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* @apply {
+  .rotate3d {
+    transform: rotate3d(0, 0, 1, -45deg);
+  }
+} */
+
+.fc {
+  /* the calendar root */
+  max-width: 1100px;
+  margin: 0 auto;
+}
